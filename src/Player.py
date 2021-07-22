@@ -20,6 +20,7 @@ class Stickman_player:
 	_jump_frame_counter = 0 # Keeps count of the jump frames
 	_frames = 5 # Number of times a frame is to be shown in a loop
 	_player_horizontal_speed = 2 # Horizontal speed of the character
+	_vertical_jump_speed = 3 # Vertical speed (Jump of the character)
 
 
 	""" INITIALIZATION OF THE CHARACTER """
@@ -98,13 +99,38 @@ class Stickman_player:
 		self._animate_frame+=1
 		self.x += self._player_horizontal_speed
 
-		if self._is_standing():
+		if self.is_standing():
 			return self.walking_imgsR[val]
 		return self.crouching_imgsR[val]
 
 	# Jump animations
 	def _jump(self):
-		va = self._animate_frame
+
+		val = self._jump_frame_counter //10
+		self._jump_frame_counter+=1
+
+		if val == len(self.jumping_imgsR):
+			self._remove_jumping()
+			self._jump_frame_counter = 0
+			return self.jumping_imgsR[2] if self._facing == "R" else self.jumping_imgsL[2]
+
+		if self._jump_frame_counter > len(self.jumping_imgsR)*5:
+			self.y += self._vertical_jump_speed
+
+		else:
+			self.y -= self._vertical_jump_speed
+
+		if self.is_walking():
+			if self._facing == "R":
+				self.x += self._player_horizontal_speed
+				return self.jumping_imgsR[val]
+			self.x -= self._player_horizontal_speed
+			return self.jumping_imgsL[val]
+		else:
+			if self._facing == "R":
+				return self.jumping_imgsR[val]
+			return self.jumping_imgsL[val]
+
 
 	""" STATUS MODIFICATION OPERATIONS """
 
@@ -120,23 +146,23 @@ class Stickman_player:
 	""" STATUS CHECKING """
 
 	# Private method returns whether the character is moving or not
-	def _is_moving(self):
+	def is_moving(self):
 		return (self._movement_status & MOVING) == MOVING
 
 	# Private method returns whether the character is walking or not
-	def _is_walking(self):
+	def is_walking(self):
 		return (self._movement_status & WALKING) == WALKING
 
 	# Private method returns whether the character is jumping or not
-	def _is_jumping(self):
+	def is_jumping(self):
 		return (self._movement_status & JUMPING) == JUMPING
 
 	# Private method returns whether the character is standing or not
-	def _is_standing(self):
+	def is_standing(self):
 		return (self._movement_status & STANDING) == STANDING
 
 	# Private method returns whether the character is crouching or not
-	def _is_crouching(self):
+	def is_crouching(self):
 		return (self._movement_status & CROUCHING) == CROUCHING
 
 
@@ -197,17 +223,19 @@ class Stickman_player:
 	# Frame movement of the character
 	def frame_movement(self):
 		# Checking if the character is moving
-		if self._is_moving():
+		if self.is_moving():
 			# Checking for movement status type
-			if self._is_walking():
-				if self._is_jumping():
-					if self._facing == "R":
-						return self._to_right() + [self._get_pos()]
-					return self._to_left() + [self._get_pos()]
+			if self.is_walking():
+				if self.is_jumping():
+					return self._jump() + [self._get_pos()]
 				if self._facing == "R":
 					return self._to_right() + [self._get_pos()]
 				return self._to_left() + [self._get_pos()]
 
+		# Jumping when there is no movement
+		if self.is_jumping():
+			return self._jump() + [self._get_pos()]
+			
 		# If the character isn't moving
 		return self._default_frame()
 
@@ -218,6 +246,7 @@ class Stickman_player:
 	def stop_moving(self):
 		self._stop = 1
 		self._remove_moving()
+		self._remove_walking()
 
 	# Set direction as right
 	def move_right(self):

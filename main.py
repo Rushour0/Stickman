@@ -42,7 +42,7 @@ player_img = player.frame_movement()
 while 1:
 	clock.tick(60)
 
-	# pressed = pygame.key.get_pressed()
+	pressed = pygame.key.get_pressed()
 	events = pygame.event.get()
 	for event in events:
 
@@ -50,6 +50,10 @@ while 1:
 		if event.type == pygame.QUIT:
 			exit()
 
+		if pressed[pygame.K_SPACE]:
+			if not player.is_jumping():
+				player.jump_up()
+				
 		# Key down check
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_a or event.key == pygame.K_LEFT:
