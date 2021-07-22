@@ -18,9 +18,9 @@ class Stickman_player:
 
 	_animate_frame = 0 # Keeps count of the animation frames
 	_jump_frame_counter = 0 # Keeps count of the jump frames
-	_frames = 5 # Number of times a frame is to be shown in a loop
+	_frames = 6 # Number of times a frame is to be shown in a loop
 	_player_horizontal_speed = 2 # Horizontal speed of the character
-	_vertical_jump_speed = 3 # Vertical speed (Jump of the character)
+	_vertical_jump_speed = 4 # Vertical speed (Jump of the character)
 
 
 	""" INITIALIZATION OF THE CHARACTER """
@@ -109,26 +109,31 @@ class Stickman_player:
 	# Jump animations
 	def _jump(self):
 
-		val = self._jump_frame_counter //10
+		# Get values for img array indexing
+		val = self._jump_frame_counter//(self._frames+4)
 		self._jump_frame_counter+=1
 
+		# Checking if its the end of jump animation
 		if val == len(self.jumping_imgsR):
 			self._remove_jumping()
 			self._jump_frame_counter = 0
 			return self.jumping_imgsR[-1] if self._facing == "R" else self.jumping_imgsL[-1]
 
-		if self._jump_frame_counter > len(self.jumping_imgsR)*5:
-			self.y += self._vertical_jump_speed
-
+		# Movement in the vertical direction
+		if self._jump_frame_counter > len(self.jumping_imgsR)*(self._frames+4)/2:
+			self.y += self._vertical_jump_speed*2-1.5 if self.y+self._vertical_jump_speed<374.0625 else 0
 		else:
 			self.y -= self._vertical_jump_speed
 
+		# Case where the player is walking
 		if self.is_walking():
 			if self._facing == "R":
 				self.x += self._player_horizontal_speed
 				return self.jumping_imgsR[val]
 			self.x -= self._player_horizontal_speed
 			return self.jumping_imgsL[val]
+
+		# Player isn't moving in the x - direction
 		else:
 			if self._facing == "R":
 				return self.jumping_imgsR[val]
