@@ -7,7 +7,6 @@ pygame.init()
 # Refresh Rate
 clock = pygame.time.Clock()
 
-
 # Font and size
 font = pygame.font.Font(font_path, 32)
 
@@ -37,8 +36,7 @@ def player_show(values):
 	screen.blit(player_img,(x,y))
 
 # Player variables
-player_img = player.default_frame()
-player_is_moving = 0
+player_img = player.frame_movement()
 
 while 1:
 	clock.tick(60)
@@ -53,31 +51,25 @@ while 1:
 
 		# Key down check
 		if event.type == pygame.KEYDOWN:
-
 			if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-				player.make_left()
-				player_is_moving = 1
+				player.move_left()
 
 			if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-				player.make_right()
-				player_is_moving = 1
+				player.move_right()
 
 		# Key up check
 		if event.type == pygame.KEYUP:
 			if event.key == pygame.K_a or event.key == pygame.K_LEFT:
 				player_is_moving = 0
-				player.stop_animating()
+				player.stop_moving()
 
 			if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
 				player_is_moving = 0
-				player.stop_animating()
+				player.stop_moving()
 
 	# Get player image
-	if player_is_moving:
-		player_img = player.frame_movement()
-	else:
-		player_img = player.default_frame()
-
+	player_img = player.frame_movement()
+	
 	# Final display of all images
 	screen.fill((0,0,0))
 	background_show()
