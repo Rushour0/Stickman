@@ -3,6 +3,9 @@ from paths import *
 from player_status_codes import *
 from bitarray import bitarray
 
+def justPass(val):
+	print(val)
+	return val
 class Stickman_player:
 
 	# Player attributes
@@ -14,6 +17,7 @@ class Stickman_player:
 	# Animation and other attributes
 
 	_animate_frame = 0 # Keeps count of the animation frames
+	_jump_frame_counter = 0 # Keeps count of the jump frames
 	_frames = 5 # Number of times a frame is to be shown in a loop
 	_player_horizontal_speed = 2 # Horizontal speed of the character
 
@@ -37,14 +41,26 @@ class Stickman_player:
 		# Walking images facing Left Direction
 		self.walking_imgsL = [[pygame.image.load(walking_img)] for walking_img in walking_imgsL]
 
-		# Walking images facing Left Direction
+		# Walking images facing Right Direction
 		self.walking_imgsR = [[pygame.image.load(walking_img)] for walking_img in walking_imgsR]
 		
+		# Jumping images facing Left Direction
+		self.jumping_imgsL = [[pygame.image.load(justPass(jumping_img))] for jumping_img in jumping_imgsL]
+
+		# Jumping images facing Left Direction
+		self.jumping_imgsR = [[pygame.image.load(jumping_img)] for jumping_img in jumping_imgsR]
+
 		# Adding other attributes to the images' list
 		for img in self.walking_imgsR:
 			img.append((img[0].get_width(),img[0].get_height()))
 
 		for img in self.walking_imgsL:
+			img.append((img[0].get_width(),img[0].get_height()))
+
+		for img in self.jumping_imgsR:
+			img.append((img[0].get_width(),img[0].get_height()))
+		
+		for img in self.jumping_imgsL:
 			img.append((img[0].get_width(),img[0].get_height()))
 
 		# Width and Height of all image frames
@@ -53,9 +69,9 @@ class Stickman_player:
 
 	""" PRIVATE METHODS FOR FRAME MANAGEMENT AND CHARACTER MOVEMENT """
 
-	# Get position of the character
+	# Get position of the character : X - Center, Y - Bottom
 	def _get_pos(self):
-		return (self.x - self.width/2,self.y - self.height)
+		return (self.x,self.y)
 
 	# Private method left facing animation of the character
 	def _to_left(self):
@@ -72,6 +88,7 @@ class Stickman_player:
 
 	# Private method right facing animation of the character
 	def _to_right(self):
+
 		val = self._animate_frame//self._frames
 		if val == len(self.walking_imgsR):
 			self._animate_frame = 0
@@ -80,8 +97,14 @@ class Stickman_player:
 
 		self._animate_frame+=1
 		self.x += self._player_horizontal_speed
-		return self.walking_imgsR[val]
 
+		if self._is_standing():
+			return self.walking_imgsR[val]
+		return self.crouching_imgsR[val]
+
+	# Jump animations
+	def _jump(self):
+		va = self._animate_frame
 
 	""" STATUS MODIFICATION OPERATIONS """
 
@@ -177,6 +200,10 @@ class Stickman_player:
 		if self._is_moving():
 			# Checking for movement status type
 			if self._is_walking():
+				if self._is_jumping():
+					if self._facing == "R":
+						return self._to_right() + [self._get_pos()]
+					return self._to_left() + [self._get_pos()]
 				if self._facing == "R":
 					return self._to_right() + [self._get_pos()]
 				return self._to_left() + [self._get_pos()]

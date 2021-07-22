@@ -22,6 +22,7 @@ screen = pygame.display.set_mode(WINDOW_DIMENSIONS, flags, 16)
 
 # Background image
 background = pygame.image.load(background_img)
+print(background.get_width(),background.get_height())
 
 # Player declaration
 player = Stickman_player(WINDOW_DIMENSIONS)
@@ -33,7 +34,7 @@ def player_show(values):
 	player_img = values[0]
 	width,height = values[1][0],values[1][1]
 	x,y = values[2][0],values[2][1]
-	screen.blit(player_img,(x,y))
+	screen.blit(player_img,(x-width/2,y-height))
 
 # Player variables
 player_img = player.frame_movement()
