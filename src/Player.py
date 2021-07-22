@@ -32,7 +32,8 @@ class Stickman_player:
 
 		# Position of the character
 		self.x = WINDOW_DIMENSIONS[0]/2
-		self.y = WINDOW_DIMENSIONS[1]*15/16
+		self.y = WINDOW_DIMENSIONS[1]*7/8
+		self.default_y_location = self.y
 
 		# Standing image facing Left Direction
 		self.standing_imgL = [pygame.image.load(standing_imgL)]
@@ -121,7 +122,7 @@ class Stickman_player:
 
 		# Movement in the vertical direction
 		if self._jump_frame_counter > len(self.jumping_imgsR)*(self._frames+4)/2:
-			self.y += self._vertical_jump_speed*2-1.5 if self.y+self._vertical_jump_speed<374.0625 else 0
+			self.y += self._vertical_jump_speed if self.y+self._vertical_jump_speed<self.default_y_location else 0
 		else:
 			self.y -= self._vertical_jump_speed
 

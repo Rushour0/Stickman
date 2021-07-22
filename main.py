@@ -16,13 +16,17 @@ pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
 # Set window name
 pygame.display.set_caption("Stickman")
 
+# Background image
+background = pygame.image.load(background_img)
+print(background.get_width(),background.get_height())
+
+# Window Dimensions
+WINDOW_DIMENSIONS = (background.get_width(),background.get_height())
+WINDOW_WIDTH,WINDOW_HEIGHT = WINDOW_DIMENSIONS
 # Create screen
 flags = DOUBLEBUF
 screen = pygame.display.set_mode(WINDOW_DIMENSIONS, flags, 16)
 
-# Background image
-background = pygame.image.load(background_img)
-print(background.get_width(),background.get_height())
 
 # Player declaration
 player = Stickman_player(WINDOW_DIMENSIONS)

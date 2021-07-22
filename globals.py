@@ -11,6 +11,3 @@ sys.path.append("fonts")
 
 from Player import *
 
-# Window Dimensions
-WINDOW_DIMENSIONS = (700,399)
-WINDOW_WIDTH,WINDOW_HEIGHT = WINDOW_DIMENSIONS
