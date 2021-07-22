@@ -27,6 +27,9 @@ class Stickman_player:
 
 	def __init__(self,WINDOW_DIMENSIONS):
 		
+		# For reference of dimensions
+		self.WINDOW_DIMENSIONS = WINDOW_DIMENSIONS
+
 		# Position of the character
 		self.x = WINDOW_DIMENSIONS[0]/2
 		self.y = WINDOW_DIMENSIONS[1]*15/16
@@ -46,7 +49,7 @@ class Stickman_player:
 		self.walking_imgsR = [[pygame.image.load(walking_img)] for walking_img in walking_imgsR]
 		
 		# Jumping images facing Left Direction
-		self.jumping_imgsL = [[pygame.image.load(justPass(jumping_img))] for jumping_img in jumping_imgsL]
+		self.jumping_imgsL = [[pygame.image.load(jumping_img)] for jumping_img in jumping_imgsL]
 
 		# Jumping images facing Left Direction
 		self.jumping_imgsR = [[pygame.image.load(jumping_img)] for jumping_img in jumping_imgsR]
@@ -71,7 +74,7 @@ class Stickman_player:
 	""" PRIVATE METHODS FOR FRAME MANAGEMENT AND CHARACTER MOVEMENT """
 
 	# Get position of the character : X - Center, Y - Bottom
-	def _get_pos(self):
+	def get_pos(self):
 		return (self.x,self.y)
 
 	# Private method left facing animation of the character
@@ -84,7 +87,7 @@ class Stickman_player:
 		val = self._animate_frame//self._frames
 		
 		self._animate_frame+=1
-		self.x -= self._player_horizontal_speed
+		self.x -= self._player_horizontal_speed if self.x-self._player_horizontal_speed>10 else 0
 		return self.walking_imgsL[val]
 
 	# Private method right facing animation of the character
@@ -97,7 +100,7 @@ class Stickman_player:
 		val = self._animate_frame//self._frames
 
 		self._animate_frame+=1
-		self.x += self._player_horizontal_speed
+		self.x += self._player_horizontal_speed if self.x+self._player_horizontal_speed<self.WINDOW_DIMENSIONS[0]-10 else 0
 
 		if self.is_standing():
 			return self.walking_imgsR[val]
@@ -112,7 +115,7 @@ class Stickman_player:
 		if val == len(self.jumping_imgsR):
 			self._remove_jumping()
 			self._jump_frame_counter = 0
-			return self.jumping_imgsR[2] if self._facing == "R" else self.jumping_imgsL[2]
+			return self.jumping_imgsR[-1] if self._facing == "R" else self.jumping_imgsL[-1]
 
 		if self._jump_frame_counter > len(self.jumping_imgsR)*5:
 			self.y += self._vertical_jump_speed
@@ -217,8 +220,8 @@ class Stickman_player:
 
 		# Player is standing
 		if self._facing == "R":
-			return self.standing_imgR + [self._get_pos()]
-		return self.standing_imgL + [self._get_pos()]
+			return self.standing_imgR + [self.get_pos()]
+		return self.standing_imgL + [self.get_pos()]
 
 	# Frame movement of the character
 	def frame_movement(self):
@@ -227,14 +230,14 @@ class Stickman_player:
 			# Checking for movement status type
 			if self.is_walking():
 				if self.is_jumping():
-					return self._jump() + [self._get_pos()]
+					return self._jump() + [self.get_pos()]
 				if self._facing == "R":
-					return self._to_right() + [self._get_pos()]
-				return self._to_left() + [self._get_pos()]
+					return self._to_right() + [self.get_pos()]
+				return self._to_left() + [self.get_pos()]
 
 		# Jumping when there is no movement
 		if self.is_jumping():
-			return self._jump() + [self._get_pos()]
+			return self._jump() + [self.get_pos()]
 			
 		# If the character isn't moving
 		return self._default_frame()

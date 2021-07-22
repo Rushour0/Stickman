@@ -39,10 +39,17 @@ def player_show(values):
 # Player variables
 player_img = player.frame_movement()
 
+# Moving keys
+keys = set([pygame.K_a,pygame.K_LEFT,pygame.K_RIGHT,pygame.K_d])
+
+# Jump keys
+jumpKeys = set([pygame.K_SPACE,pygame.K_w,pygame.K_UP])
+
 while 1:
 	clock.tick(60)
-
+	
 	pressed = pygame.key.get_pressed()
+	
 	events = pygame.event.get()
 	for event in events:
 
@@ -50,10 +57,6 @@ while 1:
 		if event.type == pygame.QUIT:
 			exit()
 
-		if pressed[pygame.K_SPACE]:
-			if not player.is_jumping():
-				player.jump_up()
-				
 		# Key down check
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_a or event.key == pygame.K_LEFT:
@@ -61,16 +64,20 @@ while 1:
 
 			if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
 				player.move_right()
+			
+			elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
+				player.move_left()
+
+			if not player.is_jumping() and event.key in jumpKeys:
+				player.jump_up()
+
 
 		# Key up check
 		if event.type == pygame.KEYUP:
-			if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-				player_is_moving = 0
+			if event.key in keys:
 				player.stop_moving()
-
-			if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-				player_is_moving = 0
-				player.stop_moving()
+			if event.key == pygame.K_l:
+				print(player.get_pos())
 
 	# Get player image
 	player_img = player.frame_movement()
@@ -82,5 +89,6 @@ while 1:
 	player_show(player_img)
 
 	pygame.display.update()
+
 
 print("over")
