@@ -28,7 +28,6 @@ WINDOW_WIDTH,WINDOW_HEIGHT = WINDOW_DIMENSIONS
 flags = DOUBLEBUF
 screen = pygame.display.set_mode(WINDOW_DIMENSIONS, flags, 16)
 
-
 # Player declaration
 player = Stickman_player(WINDOW_DIMENSIONS)
 
