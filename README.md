@@ -11,17 +11,17 @@ This is an example of my stickman moving around (which I drew by myself *frame b
 
 Use the following keys
 
-### - Jump
+### Jump
   - Spacebar
   - Up arrow
   - W
 
 
-### - Move Left
+### Move Left
   - Left Arrow
   - D
 
-### - Move Right
+### Move Right
   - Right arrow
   - A
 
